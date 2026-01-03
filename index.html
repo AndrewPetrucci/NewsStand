@@ -319,23 +319,32 @@
             });
     });
 
-    //////////////////////////////////////////////// Play iframes on Enter key ///////////////////////////////////////////////
+    //////////////////////////////////////////////// Play/Pause iframes on Enter key ///////////////////////////////////////////////
+    let isPlaying = false;
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') {
             const iframes = document.querySelectorAll('iframe');
             iframes.forEach(iframe => {
-                // Get the current src
                 let src = iframe.src;
 
-                // Add autoplay parameter if it's a YouTube embed
+                // Toggle autoplay parameter for YouTube embeds
                 if (src.includes('youtube.com/embed')) {
-                    if (!src.includes('autoplay=1')) {
-                        src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+                    if (isPlaying) {
+                        // Remove autoplay to pause
+                        src = src.replace('&autoplay=1', '').replace('?autoplay=1', '?');
+                        // Clean up any trailing ? or &
+                        src = src.replace(/[?&]$/, '');
+                    } else {
+                        // Add autoplay to play
+                        if (!src.includes('autoplay=1')) {
+                            src += (src.includes('?') ? '&' : '?') + 'autoplay=1';
+                        }
                     }
                 }
 
                 iframe.src = src;
             });
+            isPlaying = !isPlaying;
         }
     });
 </script>
